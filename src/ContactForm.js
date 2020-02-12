@@ -5,6 +5,8 @@ import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 
+const SES_API_GATEWAY = "enter-your-gateway-here.com";
+
 class ContactForm extends React.Component {
     constructor(props) {
         super(props);
@@ -13,11 +15,14 @@ class ContactForm extends React.Component {
             name_error: null,
             email: null,
             email_error: null,
-            message: null
+            message: "" 
         };
+
         this.handleSendEmail = this.handleSendEmail.bind(this);
+        //bind properties
         this.handleChangeName = this.handleChangeName.bind(this);
         this.handleChangeEmail= this.handleChangeEmail.bind(this);
+        this.handleChangeMessage = this.handleChangeMessage.bind(this);
     }
 
     validateName () {
@@ -67,11 +72,31 @@ class ContactForm extends React.Component {
         ev.preventDefault();
     }
 
+    handleChangeMessage(ev) {
+        this.setState({message: ev.target.value});
+        ev.preventDefault();
+    }
+
     handleSendEmail (ev) {
         if (this.validate()) {
-            alert("Email has been sent.");
-            /* TODO: Trigger an AWS Lambda to send email and store the
-            * message in DynamoDB */
+            fetch(SES_API_GATEWAY, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({"name": this.state.name,
+                    "email": this.state.email,
+                    "message": this.state.message})
+            }).then((success) => {
+                    //alert("Contact information sent.");
+                },
+                (err) => {
+                    //alert("Unable to send contact information.");
+                    console.log(err);
+                }
+            );
+            alert("Contact information sent.");
         } else {
             alert("Invalid email or name.");
         }
@@ -91,7 +116,7 @@ class ContactForm extends React.Component {
                             error={this.state.email_error} helperText={this.state.email_error} />
                     </Grid>
                     <Grid item xs>
-                        <TextField label="Message" multiline rows="4" value={this.state.message}/>
+                        <TextField label="Message" multiline rows="4" value={this.state.message} onChange={this.handleChangeMessage}/>
                     </Grid>
                     <Grid item xs>
                         <Button variant="contained" color = "primary" xs type="submit">
