@@ -2,7 +2,7 @@ const aws = require('aws-sdk');
 aws.config.update({
     region: process.env.SES_REGION
 })
-//const ses = new aws.SES({region: 'us-west-2'});
+
 const ses = new aws.SES({region: process.env.SES_REGION});
 const dynamo = new aws.DynamoDB.DocumentClient();
 
@@ -55,7 +55,10 @@ exports.handler = (ev, context, callback) => {
             if (err) {
                 context.fail(err);
             }  else {
+                //Create primary key
+                //TODO: replace randombytes with time
                 const messageId = ev.email+toUrlString(randomBytes(16));
+
                 const dbItem = {
                     TableName: "AWSSampleContacts",
                     Item: {
@@ -63,6 +66,7 @@ exports.handler = (ev, context, callback) => {
                         Message: params.Message
                     }
                 };
+
                 dynamo.put(dbItem, function(err,data) {
                     if (err) {
                         console.log(err, err.stack);
