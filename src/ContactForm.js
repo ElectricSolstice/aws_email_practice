@@ -1,11 +1,11 @@
 import React from 'react';
-import './ContentForm.css';
+import './ContactForm.css';
 
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 
-class ContentForm extends React.Component {
+class ContactForm extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -104,4 +104,4 @@ class ContentForm extends React.Component {
     }
 }
 
-export default ContentForm;
+export default ContactForm;
