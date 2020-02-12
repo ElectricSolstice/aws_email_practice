@@ -5,7 +5,9 @@ import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 
-const SES_API_GATEWAY = "enter-your-gateway-here.com";
+//TODO split out SES_API into a separate configuration file
+//configuration
+const SES_API = "enter_your_ses_rest_endpoint_here";
 
 class ContactForm extends React.Component {
     constructor(props) {
@@ -79,7 +81,7 @@ class ContactForm extends React.Component {
 
     handleSendEmail (ev) {
         if (this.validate()) {
-            fetch(SES_API_GATEWAY, {
+            fetch(SES_API, {
                 method: 'POST',
                 headers: {
                     'Accept': 'application/json',
@@ -92,6 +94,7 @@ class ContactForm extends React.Component {
                     //alert("Contact information sent.");
                 },
                 (err) => {
+                    //TODO fix server CORS response
                     //alert("Unable to send contact information.");
                     console.log(err);
                 }
